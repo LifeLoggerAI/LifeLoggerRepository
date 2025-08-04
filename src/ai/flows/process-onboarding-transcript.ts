@@ -44,10 +44,13 @@ const processOnboardingTranscriptFlow = ai.defineFlow(
     outputSchema: ProcessOnboardingTranscriptOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt({
+    const result = await prompt({
         ...input,
         currentDate: new Date().toLocaleDateString('en-CA'), // YYYY-MM-DD
     });
-    return output;
+    if (!result?.output) {
+      throw new Error('Failed to process onboarding transcript: AI prompt returned no output');
+    }
+    return result.output;
   }
 );

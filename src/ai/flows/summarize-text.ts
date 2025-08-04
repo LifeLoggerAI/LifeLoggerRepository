@@ -45,7 +45,10 @@ const summarizeTextFlow = ai.defineFlow(
     outputSchema: SummarizeTextOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
-    return output;
+    const result = await prompt(input);
+    if (!result?.output) {
+      throw new Error('Failed to summarize text: AI prompt returned no output');
+    }
+    return result.output;
   }
 );

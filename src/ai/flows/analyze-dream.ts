@@ -44,7 +44,10 @@ const analyzeDreamFlow = ai.defineFlow(
     outputSchema: AnalyzeDreamOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
-    return output;
+    const result = await prompt(input);
+    if (!result?.output) {
+      throw new Error('Failed to analyze dream: AI prompt returned no output');
+    }
+    return result.output;
   }
 );

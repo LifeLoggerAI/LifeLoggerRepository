@@ -515,6 +515,7 @@ export type HabitWatch = z.infer<typeof HabitWatchSchema>;
 
 export const ProcessOnboardingTranscriptInputSchema = z.object({
     transcript: z.string().describe("The full transcript of the user's onboarding conversation."),
+    currentDate: z.string().describe("The current date in YYYY-MM-DD format."),
 });
 export type ProcessOnboardingTranscriptInput = z.infer<typeof ProcessOnboardingTranscriptInputSchema>;
 

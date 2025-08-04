@@ -45,7 +45,10 @@ const enrichVoiceEventFlow = ai.defineFlow(
     outputSchema: EnrichVoiceEventOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
-    return output;
+    const result = await prompt(input);
+    if (!result?.output) {
+      throw new Error('Failed to enrich voice event: AI prompt returned no output');
+    }
+    return result.output;
   }
 );

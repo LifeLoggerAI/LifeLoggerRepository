@@ -50,7 +50,10 @@ const analyzeCameraImageFlow = ai.defineFlow(
     outputSchema: AnalyzeCameraImageOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
-    return output;
+    const result = await prompt(input);
+    if (!result?.output) {
+      throw new Error('Failed to analyze camera image: AI prompt returned no output');
+    }
+    return result.output;
   }
 );
