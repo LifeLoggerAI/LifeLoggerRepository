@@ -2,9 +2,9 @@
 import {onDocumentCreated, onDocumentUpdated} from "firebase-functions/v2/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {

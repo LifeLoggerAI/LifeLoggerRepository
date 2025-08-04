@@ -1,9 +1,9 @@
 
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -15,8 +15,8 @@ const db = admin.firestore();
  * Gathers data for all users and queues it up for email generation.
  * This function is scheduled to run daily.
  */
-export const enqueueDigestSummaries = functions.pubsub.schedule("every 24 hours")
-  .onRun(async (context) => {
+export const enqueueDigestSummaries = onSchedule
+  .onRun(async (context: any) => {
     logger.info("Running daily job to enqueue email digests.");
     // In a real application, this function would:
     // 1. Query for all users who have opted into weekly emails.
@@ -33,8 +33,7 @@ export const enqueueDigestSummaries = functions.pubsub.schedule("every 24 hours"
  */
 export const sendNarratedEmail = onDocumentCreated("/dailyDigestQueue/{uid}", async (event: FirestoreEvent<any>) => {
     const {uid} = event.params;
-    const digest = event.data?.data();
-
+    
     logger.info(`Processing email digest for user ${uid}.`);
 
     // In a real application, this function would:

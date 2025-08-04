@@ -2,9 +2,9 @@
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {onDocumentWritten, onDocumentCreated} from "firebase-functions/v2/firestore";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -42,7 +42,7 @@ export const calcValueAlignment = onDocumentWritten("torsoMetrics/{uid}/{dateKey
     // compare habitEvents and torsoMetrics against user-defined values.
     // Placeholder for AI call.
     // const alignmentScore = await callValueAlignmentAI(event.data?.after.data());
-    // await change.after.ref.update({ valueAlignmentScore: alignmentScore });
+    // await event.data?.after?.ref.update({ valueAlignmentScore: alignmentScore });
     return;
   });
 

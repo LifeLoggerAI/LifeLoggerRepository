@@ -1,9 +1,9 @@
 
 import {onDocumentCreated, onDocumentUpdated} from "firebase-functions/v2/firestore";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -30,8 +30,7 @@ export const processTelemetryEvent = onDocumentCreated("telemetryEvents/{eventId
  * Placeholder function.
  */
 export const calculateOverstimulationScore = onDocumentUpdated("dailyTelemetrySummary/{summaryId}", async (event: FirestoreEvent<any>) => {
-    const summaryData = event.data?.after.data();
-    logger.info(`Calculating overstimulation for summary: ${event.params.summaryId}`, summaryData);
+        logger.info(`Calculating overstimulation for summary: ${event.params.summaryId}`, summaryData);
     // In a real implementation:
     // 1. Analyze screen time, notification density, and app switching.
     // 2. Calculate a score (e.g., 0-1).
@@ -45,8 +44,7 @@ export const calculateOverstimulationScore = onDocumentUpdated("dailyTelemetrySu
  * Placeholder function.
  */
 export const linkTelemetryToMood = onDocumentUpdated("dailyTelemetrySummary/{summaryId}", async (event: FirestoreEvent<any>) => {
-    const summaryData = event.data?.after.data();
-    logger.info(`Linking telemetry to mood for summary: ${event.params.summaryId}`);
+        logger.info(`Linking telemetry to mood for summary: ${event.params.summaryId}`);
     // In a real implementation:
     // 1. Query for mood events on the same day.
     // 2. Find correlations between high-stress telemetry and negative moods.

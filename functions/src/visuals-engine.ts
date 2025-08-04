@@ -2,9 +2,9 @@
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -32,8 +32,7 @@ export const triggerConstellationGlow = onDocumentCreated("recoveryBlooms/{uid}/
  */
 export const fadeOldShadows = onSchedule("00 05 * * *", async () => {
     logger.info("Running daily job to fade old social shadows.");
-    const thirtyDaysAgo = admin.firestore.Timestamp.fromMillis(Date.now() - 30 * 24 * 60 * 60 * 1000);
-
+    
     // In a real application, this function would:
     // 1. Query all socialOverlays collections.
     // 2. For each user, find overlays where lastInteraction < thirtyDaysAgo.

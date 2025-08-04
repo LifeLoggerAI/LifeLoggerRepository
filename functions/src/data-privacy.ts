@@ -3,9 +3,9 @@ import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {onDocumentWritten, onDocumentUpdated} from "firebase-functions/v2/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -217,7 +217,7 @@ export const cleanupOptOut = onDocumentUpdated("users/{uid}", async (event: Fire
 
       if (!afterSettings.dataConsent?.optedOutAt) {
         logger.info(`Client did not set optedOutAt, setting it now for user ${uid}.`);
-        await change.after.ref.set({
+        await event.data?.after?.ref.set({
           settings: {
             dataConsent: {
               shareAnonymousData: false,

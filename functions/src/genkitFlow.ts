@@ -1,13 +1,10 @@
 // Import the functions you need from the SDKs you need
-import {logger} from "firebase-functions/v2";
-import type {CallableRequest} from "firebase-functions/v2/https";
-import type {FirestoreEvent} from "firebase-functions/v2/firestore";
 import * as admin from "firebase-admin";
 import cors from "cors";
 
 // import the Genkit and Google AI plugin libraries
 import {gemini15Flash, googleAI} from "@genkit-ai/googleai";
-import {genkit} from "genkit";
+import {genkit, defineFlow, generate} from "genkit";
 
 // Initialize Firebase Admin SDK
 admin.initializeApp();
@@ -18,9 +15,9 @@ genkit({
   model: gemini15Flash, // set default model
 });
 
-const helloFlow = genkit.defineFlow("helloFlow", async (name) => {
+const helloFlow = defineFlow("helloFlow", async (name) => {
   // make a generation request
-  const {text} = await genkit.generate({
+  const {text} = await generate({
     prompt: `Hello Gemini, my name is ${name}`,
     model: gemini15Flash, // explicitly use the model defined in genkit init
   });

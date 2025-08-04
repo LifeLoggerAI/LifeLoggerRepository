@@ -1,11 +1,9 @@
 
 import {onDocumentCreated, onDocumentUpdated} from "firebase-functions/v2/firestore";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
-import {v4 as uuidv4} from "uuid";
-import type { AuraState, MemoryBloom } from "../../lib/types";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -62,10 +60,10 @@ function mapEmotionToColor(emotion: string): string {
 // 1. updateAuraState – triggered on new moodLog
 export const updateAuraState = onDocumentCreated("users/{uid}/moodLogs/{logId}", async (event: FirestoreEvent<any>) => {
     const data = event.data?.data();
-    const {uid} = ctx.params;
+    const {uid} = event.params;
 
     if (!data.emotion || typeof data.intensity !== "number") {
-      logger.warn(`Missing emotion or intensity for moodLog ${ctx.params.logId}`);
+      logger.warn(`Missing emotion or intensity for moodLog ${event.params.logId}`);
       return;
     }
 
@@ -153,7 +151,7 @@ export const emotionOverTimeWatcher = functions.pubsub
 // 3. triggerBloom – milestone bloom when recovery detected
 export const triggerBloom = onDocumentCreated("users/{uid}/emotionCycles/{cycleId}", async (event: FirestoreEvent<any>) => {
     const cycleData = event.data?.data();
-    const {uid} = ctx.params;
+    const {uid} = event.params;
 
     if (cycleData.cycleType === "recovery") {
       logger.info(`Recovery detected for user ${uid}. Triggering bloom.`);

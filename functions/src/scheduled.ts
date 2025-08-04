@@ -1,9 +1,9 @@
 
 import {onSchedule} from "firebase-functions/v2/scheduler";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -18,7 +18,7 @@ const db = admin.firestore();
 export const generateWeeklyScroll = functions.pubsub
   .schedule("every monday 08:00")
   .timeZone("America/New_York") // Example timezone
-  .onRun(async (context) => {
+  .onRun(async (context: any) => {
     logger.info("Starting weekly scroll export job for all users.");
     // In a real application, this function would:
     // 1. Query for all users.
@@ -36,7 +36,7 @@ export const generateWeeklyScroll = functions.pubsub
 export const evolveCompanion = functions.pubsub
   .schedule("1 of month 09:00")
   .timeZone("America/New_York") // Example timezone
-  .onRun(async (context) => {
+  .onRun(async (context: any) => {
     logger.info("Starting monthly companion evolution job.");
     // In a real application, this function would:
     // 1. Query for all users.
@@ -54,7 +54,7 @@ export const evolveCompanion = functions.pubsub
 export const exportToBigQuery = functions.pubsub
   .schedule("every day 03:00")
   .timeZone("America/New_York") // Example timezone
-  .onRun(async (context) => {
+  .onRun(async (context: any) => {
     logger.info("Starting nightly BigQuery export job.");
     // In a real application, this function would:
     // 1. Check user consent (`dataConsent` collection).

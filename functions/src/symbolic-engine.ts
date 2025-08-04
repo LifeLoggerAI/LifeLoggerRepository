@@ -2,9 +2,9 @@
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -17,10 +17,10 @@ if (admin.apps.length === 0) {
  */
 export const createSymbolicMemoryNode = functions.firestore
   .document("{collection}/{docId}") // This would be more specific in production
-  .onCreate(async (snap, context) => {
+  .onCreate(async (snap: any, context: any) => {
     // This function would be triggered by multiple collections.
     // In a real app, you'd have dedicated functions per source type.
-    const {collection} = event.params;
+    const {collection} = context.params;
     if (!["scrolls", "rituals", "thresholds", "voiceEvents"].includes(collection)) {
       return;
     }

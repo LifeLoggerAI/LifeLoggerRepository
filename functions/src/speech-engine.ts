@@ -1,9 +1,9 @@
 
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {logger} from "firebase-functions/v2";
+import * as admin from "firebase-admin";
 import type {CallableRequest} from "firebase-functions/v2/https";
 import type {FirestoreEvent} from "firebase-functions/v2/firestore";
-import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -15,7 +15,7 @@ if (admin.apps.length === 0) {
  * This is a placeholder for a function that would be triggered by a Cloud Storage event.
  * Trigger: onFinalize(Storage) on `lifelogger-voice/{uid}/{...}/{clipId}.opus`
  */
-export const transcribeVoiceClip = functions.storage.object().onFinalize(async (object) => {
+export const transcribeVoiceClip = onObjectFinalized(async (object: any) => {
   logger.info(`Placeholder for transcribing file: ${object.name}`);
   // In a real implementation:
   // 1. Download .opus clip from Cloud Storage.
@@ -31,7 +31,7 @@ export const transcribeVoiceClip = functions.storage.object().onFinalize(async (
  * This is a placeholder for a function that would be triggered by a Pub/Sub message.
  * Trigger: Pub/Sub message on topic `transcriptReady`
  */
-export const analyzeTranscript = functions.pubsub.topic("transcriptReady").onPublish(async (message) => {
+export const analyzeTranscript = onMessagePublished(async (message: any) => {
   logger.info("Placeholder for analyzing transcript. Message:", message.json);
   // In a real implementation:
   // 1. Parse the message to get the transcript details (e.g., clipId, uid).
