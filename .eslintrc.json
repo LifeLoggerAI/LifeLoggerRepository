@@ -2,5 +2,13 @@
   "extends": [
     "next/core-web-vitals",
     "next/typescript"
+  ],
+  "ignorePatterns": [
+    "functions/",
+    "src/functions/",
+    "lifelogger-clean/",
+    "lifelogger-clean-codebase/",
+    "src/lifelogger-cleancodebase/",
+    "dataconnect-generated/"
   ]
 }
