@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useAuth } from './auth-provider';
 import { transcribeAudio } from '@/ai/flows/transcribe-audio';
 import { enrichVoiceEvent } from '@/ai/flows/enrich-voice-event';
@@ -49,9 +49,9 @@ export function NoteForm() {
           });
         });
     }
-  }, [toast]);
+  }, [toast, handleRecordingStop]);
 
-  const handleRecordingStop = async () => {
+  const handleRecordingStop = useCallback(async () => {
     if (!user) {
         toast({
             variant: "destructive",
@@ -171,7 +171,7 @@ export function NoteForm() {
         audioChunksRef.current = [];
       }
     };
-  };
+  }, [user, toast, recordingStart]);
 
   const toggleRecording = () => {
     if (recordingState === 'recording') {

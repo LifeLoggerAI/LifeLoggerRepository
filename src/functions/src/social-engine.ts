@@ -6,7 +6,7 @@ import * as admin from "firebase-admin";
 if (admin.apps.length === 0) {
   admin.initializeApp();
 }
-const db = admin.firestore();
+// const db = admin.firestore(); // Unused for now
 
 /**
  * Ingests a voice interaction and updates social contact data.

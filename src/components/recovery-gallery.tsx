@@ -74,7 +74,7 @@ export function RecoveryGallery() {
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                         <p className="whitespace-pre-wrap text-sm text-foreground/80 italic">"{scroll.narrationScript}"</p>
+                         <p className="whitespace-pre-wrap text-sm text-foreground/80 italic">&ldquo;{scroll.narrationScript}&rdquo;</p>
                         
                          {scroll.segments && scroll.segments.length > 0 && (
                              <div>

@@ -65,11 +65,11 @@ export default function LoginPage() {
         description: `You have successfully ${action === 'signIn' ? 'signed in' : 'signed up'}.`,
       });
       router.push('/');
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         variant: "destructive",
         title: "Authentication Failed",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unexpected error occurred.",
       });
     } finally {
       setIsEmailSubmitting(false);
@@ -86,11 +86,11 @@ export default function LoginPage() {
             description: `You have successfully signed in with Google.`,
         });
         router.push('/');
-    } catch (error: any) {
+    } catch (error: unknown) {
         toast({
             variant: "destructive",
             title: "Google Sign-In Failed",
-            description: error.message,
+            description: error instanceof Error ? error.message : "An unexpected error occurred.",
         });
     } finally {
         setIsGoogleSubmitting(false);

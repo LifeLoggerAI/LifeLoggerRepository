@@ -1,5 +1,5 @@
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Dream } from "@/lib/types";
 import { BrainCircuit, Milestone, Tag } from "lucide-react";

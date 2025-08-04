@@ -202,7 +202,7 @@ export default function VoiceOnboardingPage() {
                 <CardHeader>
                     <BotMessageSquare className="mx-auto h-12 w-12 text-primary animate-pulse"/>
                     <CardTitle className="font-headline text-3xl mt-4">First Reflection</CardTitle>
-                    <CardDescription>Let's begin by seeding your inner voice. I'll ask a few questions. Please respond in one continuous recording.</CardDescription>
+                    <CardDescription>Let&apos;s begin by seeding your inner voice. I&apos;ll ask a few questions. Please respond in one continuous recording.</CardDescription>
                 </CardHeader>
                 <CardContent className="min-h-[10rem] flex items-center justify-center p-6">
                     <AnimatePresence mode="wait">

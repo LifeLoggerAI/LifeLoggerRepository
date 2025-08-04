@@ -1,23 +1,20 @@
 
 'use server';
 
-import type { VoiceEvent, AudioEvent, Person, Dream, UpdateUserSettings, DashboardData, CompanionChatInput, SymbolicImageInsight, InnerVoiceReflection, SuggestRitualOutput, OnboardIntake, Goal, Task, CalendarEvent, HabitWatch, AnalyzeCameraImageOutput, ProcessOnboardingTranscriptOutput, EnrichVoiceEventOutput, AnalyzeDreamOutput, AnalyzeTextSentimentOutput, MoodLog, AuraState } from "@/lib/types";
+import type { VoiceEvent, Dream, DashboardData, CompanionChatInput, SuggestRitualOutput, MoodLog, AuraState } from "@/lib/types";
 import { z } from "zod";
 import { db } from "@/lib/firebase";
-import { doc, writeBatch, collection, query, where, getDocs, limit, increment, arrayUnion, Timestamp, orderBy, setDoc, updateDoc } from "firebase/firestore";
+import { doc, writeBatch, collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { transcribeAudio } from "@/ai/flows/transcribe-audio";
 import { summarizeText } from "@/ai/flows/summarize-text";
 import { generateSpeech } from "@/ai/flows/generate-speech";
-import { analyzeDream } from "@/ai/flows/analyze-dream";
-import { UpdateUserSettingsSchema, DashboardDataSchema, CompanionChatInputSchema, SuggestRitualInputSchema, MoodLogSchema, AuraStateSchema } from "@/lib/types";
+import { DashboardDataSchema, CompanionChatInputSchema, SuggestRitualInputSchema, MoodLogSchema, AuraStateSchema } from "@/lib/types";
 import { format } from "date-fns";
 import { companionChat } from "@/ai/flows/companion-chat";
 import { analyzeCameraImage } from "@/ai/flows/analyze-camera-image";
 import { generateSymbolicInsight } from "@/ai/flows/generate-symbolic-insight";
-import { analyzeTextSentiment } from "@/ai/flows/analyze-text-sentiment";
 import { suggestRitual } from "@/ai/flows/suggest-ritual";
 import { processOnboardingTranscript } from "@/ai/flows/process-onboarding-transcript";
-import { enrichVoiceEvent } from "@/ai/flows/enrich-voice-event";
 
 
 export async function summarizeWeekAction(userId: string): Promise<{ summary: string | null; audioDataUri: string | null; error: string | null; }> {

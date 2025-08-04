@@ -6,7 +6,7 @@ import * as admin from "firebase-admin";
 if (admin.apps.length === 0) {
   admin.initializeApp();
 }
-const db = admin.firestore();
+// const db = admin.firestore(); // Unused for now
 
 /**
  * Triggers an Orb insight based on a significant change in the user's metrics.
