@@ -4,7 +4,7 @@ import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
-    admin.initializeApp();
+  admin.initializeApp();
 }
 const db = admin.firestore();
 
@@ -13,16 +13,16 @@ const db = admin.firestore();
  * This is a placeholder for a complex data ingestion pipeline.
  */
 export const ingestArmSensors = functions.https.onCall(async (data, context) => {
-    const uid = context.auth?.uid;
-    if (!uid) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
-    }
+  const uid = context.auth?.uid;
+  if (!uid) {
+    throw new functions.https.HttpsError("unauthenticated", "User must be authenticated.");
+  }
     
-    functions.logger.info(`Ingesting arm/action sensor data for user ${uid}.`);
-    // This function would process raw gesture, tone, and app usage data.
-    // It would then write to /relationalGestures and aggregate into /armMetrics.
+  functions.logger.info(`Ingesting arm/action sensor data for user ${uid}.`);
+  // This function would process raw gesture, tone, and app usage data.
+  // It would then write to /relationalGestures and aggregate into /armMetrics.
     
-    return { success: true };
+  return { success: true };
 });
 
 /**
@@ -30,7 +30,7 @@ export const ingestArmSensors = functions.https.onCall(async (data, context) => 
  * Triggered when armMetrics are updated. Placeholder.
  */
 export const calcFollowThroughScore = functions.firestore
-  .document('armMetrics/{uid}/{dateKey}')
+  .document("armMetrics/{uid}/{dateKey}")
   .onWrite(async (change, context) => {
     functions.logger.info(`Calculating follow-through score for user ${context.params.uid}.`);
     // Logic to call OpenAI 'ActionFollowthroughAI' and update score.
@@ -42,12 +42,12 @@ export const calcFollowThroughScore = functions.firestore
  * Triggered when armMetrics are updated. Placeholder.
  */
 export const detectEmotionalOverload = functions.firestore
-  .document('armMetrics/{uid}/{dateKey}')
+  .document("armMetrics/{uid}/{dateKey}")
   .onWrite(async (change, context) => {
     const data = change.after.data();
     if (data?.emotionalEffortLoad > 70 && data?.connectionEchoScore < 40) {
-        functions.logger.info(`Emotional overload detected for user ${context.params.uid}.`);
-        // Logic to create narratorInsights and push a notification.
+      functions.logger.info(`Emotional overload detected for user ${context.params.uid}.`);
+      // Logic to create narratorInsights and push a notification.
     }
     return null;
   });
@@ -57,10 +57,10 @@ export const detectEmotionalOverload = functions.firestore
  * This is a placeholder.
  */
 export const scheduleDailyArmsSummary = functions.pubsub
-  .schedule('every day 02:30')
-  .timeZone('UTC')
+  .schedule("every day 02:30")
+  .timeZone("UTC")
   .onRun(async () => {
-    functions.logger.info('Running daily arms summary job.');
+    functions.logger.info("Running daily arms summary job.");
     // For every user:
     // 1. Aggregate yesterday’s armMetrics.
     // 2. Write a summary document.

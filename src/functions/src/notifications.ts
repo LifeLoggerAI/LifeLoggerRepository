@@ -4,7 +4,7 @@ import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
-    admin.initializeApp();
+  admin.initializeApp();
 }
 
 /**
@@ -12,14 +12,14 @@ if (admin.apps.length === 0) {
  * This is a placeholder; a real implementation would connect to a push notification service.
  */
 export const processNotificationQueue = functions.firestore
-  .document('messages/queue/{messageId}')
+  .document("messages/queue/{messageId}")
   .onCreate(async (snap, context) => {
     const message = snap.data();
     const { uid, type, body } = message;
 
     if (!uid || !body) {
-        functions.logger.error(`Notification queue message ${context.params.messageId} is missing uid or body.`);
-        return;
+      functions.logger.error(`Notification queue message ${context.params.messageId} is missing uid or body.`);
+      return;
     }
 
     functions.logger.info(`Processing notification for user ${uid} of type ${type}: "${body}"`);

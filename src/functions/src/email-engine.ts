@@ -4,7 +4,7 @@ import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
-    admin.initializeApp();
+  admin.initializeApp();
 }
 const db = admin.firestore();
 
@@ -12,7 +12,7 @@ const db = admin.firestore();
  * Gathers data for all users and queues it up for email generation.
  * This function is scheduled to run daily.
  */
-export const enqueueDigestSummaries = functions.pubsub.schedule('every 24 hours')
+export const enqueueDigestSummaries = functions.pubsub.schedule("every 24 hours")
   .onRun(async (context) => {
     functions.logger.info("Running daily job to enqueue email digests.");
     // In a real application, this function would:
@@ -29,7 +29,7 @@ export const enqueueDigestSummaries = functions.pubsub.schedule('every 24 hours'
  * This function is triggered by a new document write in /dailyDigestQueue.
  */
 export const sendNarratedEmail = functions.firestore
-  .document('/dailyDigestQueue/{uid}')
+  .document("/dailyDigestQueue/{uid}")
   .onCreate(async (snap, context) => {
     const { uid } = context.params;
     const digest = snap.data();
@@ -55,5 +55,5 @@ export const sendNarratedEmail = functions.firestore
     });
     */
    
-   return null;
+    return null;
   });

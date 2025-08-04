@@ -4,7 +4,7 @@ import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
-    admin.initializeApp();
+  admin.initializeApp();
 }
 const db = admin.firestore();
 
@@ -13,15 +13,15 @@ const db = admin.firestore();
  * Placeholder for a data ingestion pipeline.
  */
 export const ingestTimelineEvent = functions.https.onCall(async (data, context) => {
-    const uid = context.auth?.uid;
-    if (!uid) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
-    }
+  const uid = context.auth?.uid;
+  if (!uid) {
+    throw new functions.https.HttpsError("unauthenticated", "User must be authenticated.");
+  }
     
-    functions.logger.info(`Ingesting timeline event for user ${uid}.`);
-    // Logic to write to /timelineEvents and update /presentMetrics.
+  functions.logger.info(`Ingesting timeline event for user ${uid}.`);
+  // Logic to write to /timelineEvents and update /presentMetrics.
     
-    return { success: true };
+  return { success: true };
 });
 
 /**
@@ -29,7 +29,7 @@ export const ingestTimelineEvent = functions.https.onCall(async (data, context) 
  * Triggered on new timeline events. Placeholder.
  */
 export const detectShadowEpisode = functions.firestore
-  .document('timelineEvents/{uid}/{eventId}')
+  .document("timelineEvents/{uid}/{eventId}")
   .onWrite(async (change, context) => {
     functions.logger.info(`Checking for shadow episode for user ${context.params.uid}.`);
     // Logic to check recent timelineEvents for negative tone.
@@ -42,8 +42,8 @@ export const detectShadowEpisode = functions.firestore
  * This is a placeholder.
  */
 export const runForecastEngine = functions.pubsub
-  .schedule('every day 02:05')
-  .timeZone('UTC')
+  .schedule("every day 02:05")
+  .timeZone("UTC")
   .onRun(async () => {
     functions.logger.info("Running daily emotional forecast for all users.");
     // For every user:
@@ -58,8 +58,8 @@ export const runForecastEngine = functions.pubsub
  * This is a placeholder.
  */
 export const updateArchetypeState = functions.pubsub
-  .schedule('every sunday 04:00')
-  .timeZone('UTC')
+  .schedule("every sunday 04:00")
+  .timeZone("UTC")
   .onRun(async () => {
     functions.logger.info("Running weekly archetype evolution for all users.");
     // For every user:
@@ -74,7 +74,7 @@ export const updateArchetypeState = functions.pubsub
  * Triggered on updates to legacy threads. Placeholder.
  */
 export const evaluateLegacyProgress = functions.firestore
-  .document('legacyThreads/{uid}/{threadId}')
+  .document("legacyThreads/{uid}/{threadId}")
   .onUpdate(async (change, context) => {
     functions.logger.info(`Evaluating legacy progress for user ${context.params.uid}.`);
     // Logic to check progressScore and trigger notifications if milestones are met.

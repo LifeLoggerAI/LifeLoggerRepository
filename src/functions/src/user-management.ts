@@ -4,7 +4,7 @@ import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
-    admin.initializeApp();
+  admin.initializeApp();
 }
 const db = admin.firestore();
 
@@ -13,41 +13,41 @@ const db = admin.firestore();
  * This aligns with the "ONBOARDING SETUP TASK" from the blueprint.
  */
 export const createDefaultProfile = functions.auth.user().onCreate(async (user) => {
-    const { uid, email, displayName, photoURL } = user;
+  const { uid, email, displayName, photoURL } = user;
 
-    try {
-        const newUserDoc = {
-            displayName: displayName || email?.split('@')[0] || "Anonymous",
-            email: email || "",
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            avatarUrl: photoURL || `https://placehold.co/128x128.png?text=${(displayName || email || "A").charAt(0).toUpperCase()}`,
-            settings: {
-                moodTrackingEnabled: true,
-                passiveAudioEnabled: true,
-                faceEmotionEnabled: false,
-                dataExportEnabled: true,
-                narratorVolume: 0.8,
-                ttsVoice: 'warmCalm',
-                receiveWeeklyEmail: true,
-                receiveMilestones: true,
-                emailTone: 'poetic',
-            },
-            personaProfile: {},
-            symbolLexicon: {},
-            subscriptionTier: 'free',
-            isProUser: false,
-            onboardingComplete: false,
-        };
+  try {
+    const newUserDoc = {
+      displayName: displayName || email?.split("@")[0] || "Anonymous",
+      email: email || "",
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      avatarUrl: photoURL || `https://placehold.co/128x128.png?text=${(displayName || email || "A").charAt(0).toUpperCase()}`,
+      settings: {
+        moodTrackingEnabled: true,
+        passiveAudioEnabled: true,
+        faceEmotionEnabled: false,
+        dataExportEnabled: true,
+        narratorVolume: 0.8,
+        ttsVoice: "warmCalm",
+        receiveWeeklyEmail: true,
+        receiveMilestones: true,
+        emailTone: "poetic",
+      },
+      personaProfile: {},
+      symbolLexicon: {},
+      subscriptionTier: "free",
+      isProUser: false,
+      onboardingComplete: false,
+    };
 
-        await db.collection("users").doc(uid).set(newUserDoc);
-        functions.logger.info(`Successfully created profile for user: ${uid}`);
+    await db.collection("users").doc(uid).set(newUserDoc);
+    functions.logger.info(`Successfully created profile for user: ${uid}`);
 
-        // As per blueprint: "enqueue welcome notification"
-        functions.logger.info(`Enqueued welcome notification for user ${uid}`);
+    // As per blueprint: "enqueue welcome notification"
+    functions.logger.info(`Enqueued welcome notification for user ${uid}`);
 
-    } catch (error) {
-        functions.logger.error(`Error creating profile for user ${uid}:`, error);
-    }
+  } catch (error) {
+    functions.logger.error(`Error creating profile for user ${uid}:`, error);
+  }
 });
 
 /**
@@ -55,17 +55,17 @@ export const createDefaultProfile = functions.auth.user().onCreate(async (user) 
  * This starts implementing the data cleanup logic from the blueprint.
  */
 export const onUserDelete = functions.auth.user().onDelete(async (user) => {
-    const { uid } = user;
-    functions.logger.info(`Starting data cleanup for deleted user: ${uid}`);
+  const { uid } = user;
+  functions.logger.info(`Starting data cleanup for deleted user: ${uid}`);
     
-    const userDocRef = db.collection("users").doc(uid);
+  const userDocRef = db.collection("users").doc(uid);
     
-    try {
-        // This is a simplified version. A real app would also delete associated
-        // data in other collections (voiceEvents, etc.) and in Storage.
-        await userDocRef.delete();
-        functions.logger.info(`Successfully deleted user profile for ${uid}. Further cleanup is required for a production app.`);
-    } catch (error) {
-        functions.logger.error(`Error deleting user profile for ${uid}:`, error);
-    }
+  try {
+    // This is a simplified version. A real app would also delete associated
+    // data in other collections (voiceEvents, etc.) and in Storage.
+    await userDocRef.delete();
+    functions.logger.info(`Successfully deleted user profile for ${uid}. Further cleanup is required for a production app.`);
+  } catch (error) {
+    functions.logger.error(`Error deleting user profile for ${uid}:`, error);
+  }
 });

@@ -4,7 +4,7 @@ import * as admin from "firebase-admin";
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
-    admin.initializeApp();
+  admin.initializeApp();
 }
 const db = admin.firestore();
 
@@ -13,7 +13,7 @@ const db = admin.firestore();
  * Placeholder function.
  */
 export const triggerOrbInsight = functions.firestore
-  .document('presentMetrics/{uid}')
+  .document("presentMetrics/{uid}")
   .onWrite(async (change, context) => {
     functions.logger.info(`Checking for Orb trigger for user ${context.params.uid}.`);
     // In a real app:
@@ -30,23 +30,23 @@ export const triggerOrbInsight = functions.firestore
  * Placeholder for HTTPS callable function.
  */
 export const generateOrbResponse = functions.https.onCall(async (data, context) => {
-    const uid = context.auth?.uid;
-    if (!uid) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
-    }
+  const uid = context.auth?.uid;
+  if (!uid) {
+    throw new functions.https.HttpsError("unauthenticated", "User must be authenticated.");
+  }
     
-    functions.logger.info(`Generating Orb response for user ${uid}.`);
-    // In a real app:
-    // 1. Receive userPrompt and context.
-    // 2. Call an AI model (e.g., OpenAI) with a specialized prompt pack.
-    // 3. Return the AI's text, a TTS audio reference, and a symbolic summary.
-    // 4. Log the interaction to /orbDialogMemory.
+  functions.logger.info(`Generating Orb response for user ${uid}.`);
+  // In a real app:
+  // 1. Receive userPrompt and context.
+  // 2. Call an AI model (e.g., OpenAI) with a specialized prompt pack.
+  // 3. Return the AI's text, a TTS audio reference, and a symbolic summary.
+  // 4. Log the interaction to /orbDialogMemory.
     
-    return { 
-        text: "This is a placeholder response from your AI Coach.",
-        ttsUrl: null,
-        symbolicSummary: "reflection"
-    };
+  return { 
+    text: "This is a placeholder response from your AI Coach.",
+    ttsUrl: null,
+    symbolicSummary: "reflection"
+  };
 });
 
 /**
@@ -54,18 +54,18 @@ export const generateOrbResponse = functions.https.onCall(async (data, context) 
  * Placeholder for HTTPS callable function.
  */
 export const startRitualByPrompt = functions.https.onCall(async (data, context) => {
-    const uid = context.auth?.uid;
-    if (!uid) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
-    }
+  const uid = context.auth?.uid;
+  if (!uid) {
+    throw new functions.https.HttpsError("unauthenticated", "User must be authenticated.");
+  }
     
-    functions.logger.info(`Starting a ritual for user ${uid}.`);
-    // In a real app:
-    // 1. Determine the ritual type from the input.
-    // 2. Create a new /rituals document.
-    // 3. Log the action to /orbEvents.
+  functions.logger.info(`Starting a ritual for user ${uid}.`);
+  // In a real app:
+  // 1. Determine the ritual type from the input.
+  // 2. Create a new /rituals document.
+  // 3. Log the action to /orbEvents.
     
-    return { success: true, ritualId: "demoRitual123" };
+  return { success: true, ritualId: "demoRitual123" };
 });
 
 
@@ -74,10 +74,10 @@ export const startRitualByPrompt = functions.https.onCall(async (data, context) 
  * Placeholder for Pub/Sub scheduled function.
  */
 export const dailyOrbNarratorTrigger = functions.pubsub
-  .schedule('every day 02:10')
-  .timeZone('UTC')
+  .schedule("every day 02:10")
+  .timeZone("UTC")
   .onRun(async () => {
-    functions.logger.info('Running daily Orb narrator trigger job.');
+    functions.logger.info("Running daily Orb narrator trigger job.");
     // For every "pro" user:
     // 1. Generate a daily reflection insight.
     // 2. Create a narratorInsight document.
