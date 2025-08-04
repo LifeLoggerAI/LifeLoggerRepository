@@ -14,7 +14,7 @@ if (admin.apps.length === 0) {
 export const generateWeeklyScroll = functions.pubsub
   .schedule('every monday 08:00')
   .timeZone('America/New_York') // Example timezone
-  .onRun(async (context) => {
+  .onRun(async (_context) => {
     functions.logger.info('Starting weekly scroll export job for all users.');
     // In a real application, this function would:
     // 1. Query for all users.
@@ -32,7 +32,7 @@ export const generateWeeklyScroll = functions.pubsub
 export const evolveCompanion = functions.pubsub
   .schedule('1 of month 09:00')
   .timeZone('America/New_York') // Example timezone
-  .onRun(async (context) => {
+  .onRun(async (_context) => {
     functions.logger.info('Starting monthly companion evolution job.');
     // In a real application, this function would:
     // 1. Query for all users.
@@ -50,7 +50,7 @@ export const evolveCompanion = functions.pubsub
 export const exportToBigQuery = functions.pubsub
   .schedule('every day 03:00')
   .timeZone('America/New_York') // Example timezone
-  .onRun(async (context) => {
+  .onRun(async (_context) => {
     functions.logger.info('Starting nightly BigQuery export job.');
     // In a real application, this function would:
     // 1. Check user consent (`dataConsent` collection).
@@ -83,7 +83,7 @@ export const scheduleDailyTorsoSummary = functions.pubsub
 export const scheduleDailySnapshot = functions.pubsub
     .schedule('every day 03:15')
     .timeZone('UTC')
-    .onRun(async (context) => {
+    .onRun(async (_context) => {
         functions.logger.info("Running daily job to generate Sky and Ground snapshots for all users.");
         // In a real implementation, this function would:
         // 1. Loop through all active users.

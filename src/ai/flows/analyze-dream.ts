@@ -17,7 +17,7 @@ import {
   type AnalyzeDreamOutput,
 } from '@/lib/types';
 
-export async function analyzeDream(input: AnalyzeDreamInput): Promise<AnalyzeDreamOutput | null> {
+export async function analyzeDream(input: AnalyzeDreamInput): Promise<AnalyzeDreamOutput> {
   return analyzeDreamFlow(input);
 }
 

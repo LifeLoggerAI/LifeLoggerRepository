@@ -16,7 +16,7 @@ import {
   type SuggestRitualOutput,
 } from '@/lib/types';
 
-export async function suggestRitual(input: SuggestRitualInput): Promise<SuggestRitualOutput | null> {
+export async function suggestRitual(input: SuggestRitualInput): Promise<SuggestRitualOutput> {
   return suggestRitualFlow(input);
 }
 

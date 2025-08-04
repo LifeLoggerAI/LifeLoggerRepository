@@ -107,7 +107,7 @@ export function NoteForm() {
         const newVoiceEvent: VoiceEvent = {
             id: voiceEventId,
             uid: userId,
-            audioEventId: audioEventId,
+            audioEventId,
             speakerLabel: 'user',
             text: transcript,
             createdAt: timestamp,
@@ -139,7 +139,7 @@ export function NoteForm() {
                         lastSeen: timestamp,
                         familiarityIndex: 1,
                         socialRoleHistory: [{ date: timestamp, role: analysis.voiceArchetype }],
-                        avatarUrl: avatarUrl
+                        avatarUrl
                     };
                     batch.set(newPersonRef, newPerson);
                 } else {

@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
-import { Card, CardDescription, CardHeader, CardTitle, CardContent, CardFooter } from './ui/card';
+import { Card, CardDescription, CardHeader, CardTitle, CardFooter } from './ui/card';
 
 export function SummarizationTool() {
     const { user } = useAuth();

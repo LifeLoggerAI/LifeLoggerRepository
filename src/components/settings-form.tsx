@@ -98,7 +98,7 @@ export function SettingsForm() {
       }
       
       const userRef = doc(db, "users", user.uid);
-      const updatePayload: Record<string, any> = {
+      const updatePayload: Record<string, string | boolean> = {
           displayName: data.displayName,
           'settings.moodTrackingEnabled': data.moodTrackingEnabled,
           'settings.passiveAudioEnabled': data.passiveAudioEnabled,

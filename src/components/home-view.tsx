@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState }from 'react';
-import type { Person, SuggestRitualOutput, AuraState, MemoryBloom, Dream, VoiceEvent, InnerVoiceReflection, Goal, Task, User, PersonaProfile } from '@/lib/types';
+import type { Person, AuraState, MemoryBloom, Dream, VoiceEvent, InnerVoiceReflection, Goal, Task, User, PersonaProfile } from '@/lib/types';
 import { suggestRitualAction } from '@/app/actions';
 import { useAuth } from './auth-provider';
 import { Skeleton } from './ui/skeleton';
@@ -97,7 +97,7 @@ export function HomeView() {
           await auth.signOut();
           toast({ title: "Signed Out", description: "You have been successfully signed out." });
           router.push('/login');
-        } catch (error) {
+        } catch {
           toast({ variant: "destructive", title: "Sign Out Failed", description: "An error occurred while signing out. Please try again." });
         }
     };

@@ -17,7 +17,7 @@ import {
   type AnalyzeTextSentimentOutput,
 } from '@/lib/types';
 
-export async function analyzeTextSentiment(input: AnalyzeTextSentimentInput): Promise<AnalyzeTextSentimentOutput | null> {
+export async function analyzeTextSentiment(input: AnalyzeTextSentimentInput): Promise<AnalyzeTextSentimentOutput> {
   return analyzeTextSentimentFlow(input);
 }
 

@@ -18,7 +18,7 @@ import {
 
 export async function generateAvatar(
   input: GenerateAvatarInput
-): Promise<GenerateAvatarOutput | null> {
+): Promise<GenerateAvatarOutput> {
   return generateAvatarFlow(input);
 }
 

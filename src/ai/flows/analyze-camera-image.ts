@@ -16,7 +16,7 @@ import {
   type AnalyzeCameraImageOutput,
 } from '@/lib/types';
 
-export async function analyzeCameraImage(input: AnalyzeCameraImageInput): Promise<AnalyzeCameraImageOutput | null> {
+export async function analyzeCameraImage(input: AnalyzeCameraImageInput): Promise<AnalyzeCameraImageOutput> {
   return analyzeCameraImageFlow(input);
 }
 

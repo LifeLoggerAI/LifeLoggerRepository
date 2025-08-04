@@ -19,7 +19,7 @@ import {
 
 export async function generateSpeech(
   input: GenerateSpeechInput
-): Promise<GenerateSpeechOutput | null> {
+): Promise<GenerateSpeechOutput> {
   return generateSpeechFlow(input);
 }
 

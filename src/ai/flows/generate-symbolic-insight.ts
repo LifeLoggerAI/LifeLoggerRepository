@@ -16,7 +16,7 @@ import {
   type GenerateSymbolicInsightOutput,
 } from '@/lib/types';
 
-export async function generateSymbolicInsight(input: GenerateSymbolicInsightInput): Promise<GenerateSymbolicInsightOutput | null> {
+export async function generateSymbolicInsight(input: GenerateSymbolicInsightInput): Promise<GenerateSymbolicInsightOutput> {
   return generateSymbolicInsightFlow(input);
 }
 

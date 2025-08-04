@@ -16,7 +16,7 @@ import {
   type ProcessOnboardingTranscriptOutput,
 } from '@/lib/types';
 
-export async function processOnboardingTranscript(input: ProcessOnboardingTranscriptInput): Promise<ProcessOnboardingTranscriptOutput | null> {
+export async function processOnboardingTranscript(input: ProcessOnboardingTranscriptInput): Promise<ProcessOnboardingTranscriptOutput> {
   return processOnboardingTranscriptFlow(input);
 }
 

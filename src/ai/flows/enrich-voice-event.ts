@@ -16,7 +16,7 @@ import {
   type EnrichVoiceEventOutput,
 } from '@/lib/types';
 
-export async function enrichVoiceEvent(input: EnrichVoiceEventInput): Promise<EnrichVoiceEventOutput | null> {
+export async function enrichVoiceEvent(input: EnrichVoiceEventInput): Promise<EnrichVoiceEventOutput> {
   return enrichVoiceEventFlow(input);
 }
 

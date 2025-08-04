@@ -16,7 +16,7 @@ import {
   type CompanionChatOutput,
 } from '@/lib/types';
 
-export async function companionChat(input: CompanionChatInput): Promise<CompanionChatOutput | null> {
+export async function companionChat(input: CompanionChatInput): Promise<CompanionChatOutput> {
   return companionChatFlow(input);
 }
 

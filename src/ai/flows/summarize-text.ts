@@ -15,7 +15,7 @@ import {
     type SummarizeTextOutput
 } from '@/lib/types';
 
-export async function summarizeText(input: SummarizeTextInput): Promise<SummarizeTextOutput | null> {
+export async function summarizeText(input: SummarizeTextInput): Promise<SummarizeTextOutput> {
   return summarizeTextFlow(input);
 }
 
