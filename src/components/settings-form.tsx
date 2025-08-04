@@ -444,7 +444,7 @@ export function SettingsForm() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Confirm Data Export</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This will start the process of exporting all your data. You will receive an email with a secure download link when it's ready. This may take some time.
+                            This will start the process of exporting all your data. You will receive an email with a secure download link when it&apos;s ready. This may take some time.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
