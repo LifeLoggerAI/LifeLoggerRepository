@@ -8,7 +8,7 @@ import { useAuth } from './auth-provider';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { Skeleton } from './ui/skeleton';
 import { Alert, AlertTitle, AlertDescription } from './ui/alert';
-import { Bar, BarChart, Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from 'recharts';
+import { Bar, BarChart, Area, AreaChart, XAxis, YAxis, CartesianGrid, Cell } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
 import { BrainCircuit, Users, TrendingUp, AlertCircle, Sparkles, Mic } from 'lucide-react';
 
@@ -30,7 +30,7 @@ export function DashboardView() {
                     } else {
                         setData(result.data);
                     }
-                } catch (e) {
+                } catch {
                     setError('An unexpected error occurred.');
                 } finally {
                     setIsLoading(false);
@@ -79,7 +79,7 @@ export function DashboardView() {
         ...data.emotionBreakdown.reduce((acc, curr, index) => {
             acc[curr.name] = { label: curr.name, color: `hsl(var(--chart-${(index % 5) + 1}))`};
             return acc;
-        }, {} as any)
+        }, {} as Record<string, { label: string; color: string }>)
     };
 
 

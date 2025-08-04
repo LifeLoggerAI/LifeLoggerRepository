@@ -1,5 +1,5 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { SentimentIcon } from "@/components/sentiment-icon";
 import type { InnerVoiceReflection, Sentiment } from "@/lib/types";
 

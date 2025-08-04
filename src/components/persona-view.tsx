@@ -2,7 +2,7 @@
 'use client';
 
 import type { PersonaProfile } from '@/lib/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Progress } from './ui/progress';
 import { Badge } from './ui/badge';
 import { Skeleton } from './ui/skeleton';
