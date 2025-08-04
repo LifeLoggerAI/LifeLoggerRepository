@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+.next/
+
+# Firebase Functions (has its own ESLint config)
+functions/
+
+# Utility directories with their own ESLint configs
+lifelogger-clean/
+lifelogger-clean-codebase/
+src/lifelogger-cleancodebase/
+
+# Generated files
+dataconnect-generated/
+
+# Build outputs
+.next/
+dist/
+out/
+
+# IDE files
+.vscode/
+.idx/
+
+# Log files
+*.log
+
+# Temporary directories
+workspace/
