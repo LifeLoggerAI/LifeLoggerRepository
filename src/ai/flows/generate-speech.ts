@@ -8,6 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+// @ts-ignore - wav module doesn't have type definitions
 import wav from 'wav';
 import {googleAI} from '@genkit-ai/googleai';
 import { 
@@ -38,7 +39,7 @@ async function toWav(
 
     const bufs: Buffer[] = [];
     writer.on('error', reject);
-    writer.on('data', function (d) {
+    writer.on('data', function (d: Buffer) {
       bufs.push(d);
     });
     writer.on('end', function () {

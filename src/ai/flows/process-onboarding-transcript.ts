@@ -45,9 +45,12 @@ const processOnboardingTranscriptFlow = ai.defineFlow(
   },
   async (input) => {
     const {output} = await prompt({
-        ...input,
+        transcript: input.transcript,
         currentDate: new Date().toLocaleDateString('en-CA'), // YYYY-MM-DD
     });
+    if (!output) {
+      throw new Error('Failed to process onboarding transcript');
+    }
     return output;
   }
 );

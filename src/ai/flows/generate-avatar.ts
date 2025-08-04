@@ -39,7 +39,7 @@ const generateAvatarFlow = ai.defineFlow(
 
     if (!media?.url) {
       console.error('Image generation failed to return a media URL.');
-      return null;
+      throw new Error('Failed to generate avatar image');
     }
 
     return {

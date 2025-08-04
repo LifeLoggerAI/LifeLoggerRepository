@@ -1,6 +1,6 @@
 
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
-import { getFirestore, connectFirestoreEmulator, type Firestore, initializeFirestore, persistentLocalCache } from "firebase/firestore";
+import { getFirestore, connectFirestoreEmulator, type Firestore, initializeFirestore, persistentLocalCache, persistentSingleTabManager } from "firebase/firestore";
 import { getAuth, connectAuthEmulator, type Auth } from "firebase/auth";
 import { getFunctions, connectFunctionsEmulator, type Functions } from "firebase/functions";
 
@@ -24,7 +24,7 @@ const functions: Functions = getFunctions(app);
 let db: Firestore;
 try {
     db = initializeFirestore(app, {
-        localCache: persistentLocalCache({ tabManager: 'single-tab' })
+        localCache: persistentLocalCache({ tabManager: persistentSingleTabManager(undefined) })
     });
 } catch (e) {
     console.warn("Firestore initialization with persistence failed, falling back to in-memory cache. Error:", e);
