@@ -49,7 +49,7 @@ export function NoteForm() {
           });
         });
     }
-  }, [toast]);
+  }, [toast]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleRecordingStop = async () => {
     if (!user) {
