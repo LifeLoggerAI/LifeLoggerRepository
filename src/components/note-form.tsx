@@ -24,6 +24,134 @@ export function NoteForm() {
   const audioChunksRef = useRef<Blob[]>([]);
   const { toast } = useToast();
 
+  const handleRecordingStop = useCallback(async () => {
+    if (!user) {
+        toast({
+            variant: "destructive",
+            title: "Not Authenticated",
+            description: "You must be logged in to save a voice note.",
+        });
+        setRecordingState('idle');
+        audioChunksRef.current = [];
+        return;
+    }
+    const userId = user.uid;
+
+    setRecordingState('processing');
+    const durationSec = (Date.now() - recordingStart) / 1000;
+    const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+    
+    try {
+        // Step 1: Upload audio to Firebase Storage
+        const audioDataUri = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(audioBlob);
+        });
+        
+        // Step 2: Transcribe and analyze the audio
+        const transcriptResult = await transcribeAudio({ audioDataUri });
+        const transcript = transcriptResult?.transcript || "Could not transcribe";
+        const analysis = await enrichVoiceEvent({ text: transcript });
+        
+        if (!analysis) {
+            toast({
+                variant: "destructive",
+                title: "Processing Failed",
+                description: "Could not analyze your voice note. Please try again.",
+            });
+            setRecordingState('idle');
+            audioChunksRef.current = [];
+            return;
+        }
+
+        // Step 3: Write all data to Firestore in a batch
+        const audioEventId = doc(collection(db, "audioEvents")).id;
+        const voiceEventId = doc(collection(db, "voiceEvents")).id;
+        const timestamp = Date.now();
+        const batch = writeBatch(db);
+
+        const newAudioEvent: AudioEvent = {
+            id: audioEventId,
+            uid: userId,
+            storagePath: `audio/${userId}/${audioEventId}.webm`,
+            startTs: timestamp - Math.round(durationSec * 1000),
+            endTs: timestamp,
+            durationSec: Math.round(durationSec),
+            transcriptionStatus: 'complete',
+        };
+        batch.set(doc(db, "audioEvents", newAudioEvent.id), newAudioEvent);
+
+        const newVoiceEvent: VoiceEvent = {
+            id: voiceEventId,
+            uid: userId,
+            audioEventId: audioEventId,
+            speakerLabel: 'user',
+            text: transcript,
+            createdAt: timestamp,
+            emotion: analysis.emotion,
+            sentimentScore: analysis.sentimentScore,
+            toneShift: analysis.toneShift,
+            voiceArchetype: analysis.voiceArchetype,
+            people: analysis.people || [],
+            tasks: analysis.tasks || [],
+        };
+        batch.set(doc(db, "voiceEvents", newVoiceEvent.id), newVoiceEvent);
+
+        // Step 4: Handle people mentioned
+        if (analysis.people && analysis.people.length > 0) {
+            for (const personName of analysis.people) {
+                const peopleRef = collection(db, "people");
+                const q = query(peopleRef, where("uid", "==", userId), where("name", "==", personName), limit(1));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    const newPersonRef = doc(peopleRef);
+                    const avatarResult = await generateAvatar({ name: personName, role: analysis.voiceArchetype });
+                    const avatarUrl = avatarResult?.avatarDataUri || `https://placehold.co/128x128.png?text=${personName.charAt(0).toUpperCase()}`;
+
+                    const newPerson: Person = {
+                        id: newPersonRef.id,
+                        uid: userId,
+                        name: personName,
+                        lastSeen: timestamp,
+                        familiarityIndex: 1,
+                        avatarDataUri: avatarUrl,
+                    };
+                    batch.set(newPersonRef, newPerson);
+                } else {
+                    const existingPersonRef = querySnapshot.docs[0].ref;
+                    batch.update(existingPersonRef, {
+                        lastSeen: timestamp,
+                        familiarityIndex: increment(1),
+                    });
+                }
+            }
+        }
+
+        await batch.commit();
+
+        toast({
+            title: "Voice Note Saved",
+            description: "Your voice note has been processed and saved.",
+        });
+
+        setRecordingState('idle');
+        audioChunksRef.current = [];
+      } catch (error) {
+        console.error("Error processing voice note:", error);
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "An error occurred while saving your voice note. Please try again.",
+        });
+        setRecordingState('idle');
+        audioChunksRef.current = [];
+      }
+    };
+  }, [user, toast, recordingStart]);
+
   useEffect(() => {
     // We need to check for `window` to ensure this runs only on the client.
     if (typeof window !== "undefined") {
@@ -50,8 +178,6 @@ export function NoteForm() {
         });
     }
   }, [toast, handleRecordingStop]);
-
-  const handleRecordingStop = useCallback(async () => {
     if (!user) {
         toast({
             variant: "destructive",

@@ -43,6 +43,9 @@ const generateSymbolicInsightFlow = ai.defineFlow(
     // Stringify the analysis object to pass it into the prompt context
     const analysisStr = JSON.stringify(input.analysis, null, 2);
     const {output} = await prompt({ analysis: analysisStr });
+    if (!output) {
+      throw new Error('Failed to generate symbolic insight');
+    }
     return output;
   }
 );

@@ -48,6 +48,9 @@ const processOnboardingTranscriptFlow = ai.defineFlow(
         ...input,
         currentDate: new Date().toLocaleDateString('en-CA'), // YYYY-MM-DD
     });
+    if (!output) {
+      throw new Error('Failed to process onboarding transcript');
+    }
     return output;
   }
 );

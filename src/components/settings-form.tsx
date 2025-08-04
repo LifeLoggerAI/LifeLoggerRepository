@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, type UpdateData } from 'firebase/firestore';
 import { updateProfile } from 'firebase/auth';
 import type { UpdateUserSettings } from '@/lib/types';
 import { UpdateUserSettingsSchema } from '@/lib/types';
@@ -98,7 +98,7 @@ export function SettingsForm() {
       }
       
       const userRef = doc(db, "users", user.uid);
-      const updatePayload: Record<string, unknown> = {
+      const updatePayload: UpdateData<unknown> = {
           displayName: data.displayName,
           'settings.moodTrackingEnabled': data.moodTrackingEnabled,
           'settings.passiveAudioEnabled': data.passiveAudioEnabled,
