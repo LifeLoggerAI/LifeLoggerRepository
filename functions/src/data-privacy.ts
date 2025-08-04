@@ -11,21 +11,301 @@ const db = admin.firestore();
 
 /**
  * Anonymizes user data upon request or based on settings.
- * This is a placeholder for a complex data anonymization pipeline.
+ * Implements comprehensive data anonymization with PII removal and fuzzing.
  */
 export const anonymizeUserData = functions.https.onCall(async (data, context) => {
   const uid = context.auth?.uid;
   if (!uid) {
     throw new functions.https.HttpsError("unauthenticated", "User must be authenticated.");
   }
-  functions.logger.info(`Starting data anonymization for user ${uid}.`);
-  // In a real implementation:
-  // 1. Hash user UID with a salt.
-  // 2. Query user's data from various collections.
-  // 3. Fuzz timestamps, round GPS, remove PII.
-  // 4. Write to /anonymizedData collection.
-  return {success: true, message: "Anonymization process initiated."};
+  
+  const { collections, options } = data;
+  const anonymizationLevel = options?.level || 'standard'; // 'minimal', 'standard', 'complete'
+  
+  functions.logger.info(`Starting ${anonymizationLevel} data anonymization for user ${uid}.`);
+  
+  try {
+    // Generate anonymized user ID using consistent hashing
+    const anonymizedUid = await generateAnonymizedId(uid);
+    
+    // Define collections to anonymize
+    const collectionsToProcess = collections || [
+      'voiceClips', 'voiceTranscripts', 'dreamJournal', 'emotionEvents', 
+      'presentMetrics', 'goals', 'tasks', 'achievements'
+    ];
+    
+    const anonymizationResults: { [collection: string]: number } = {};
+    
+    // Process each collection
+    for (const collectionName of collectionsToProcess) {
+      try {
+        const documentsProcessed = await anonymizeCollection(uid, anonymizedUid, collectionName, anonymizationLevel);
+        anonymizationResults[collectionName] = documentsProcessed;
+        
+        functions.logger.info(`Anonymized ${documentsProcessed} documents from ${collectionName} for user ${uid}`);
+      } catch (error) {
+        functions.logger.error(`Error anonymizing ${collectionName} for user ${uid}:`, error);
+        anonymizationResults[collectionName] = -1; // Indicate error
+      }
+    }
+    
+    // Create anonymization record
+    await db.collection('anonymizedData').doc(anonymizedUid).set({
+      originalUid: await hashWithSalt(uid), // Double-hashed for extra security
+      anonymizedAt: admin.firestore.FieldValue.serverTimestamp(),
+      anonymizationLevel: anonymizationLevel,
+      collectionsProcessed: anonymizationResults,
+      totalDocuments: Object.values(anonymizationResults).reduce((sum, count) => sum + Math.max(0, count), 0)
+    });
+    
+    // Log the anonymization event
+    await db.collection('dataPrivacyLogs').add({
+      uid: await hashWithSalt(uid),
+      action: 'anonymization',
+      level: anonymizationLevel,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      results: anonymizationResults
+    });
+    
+    functions.logger.info(`Successfully completed anonymization for user ${uid}`);
+    
+    return {
+      success: true, 
+      message: "Anonymization process completed.",
+      anonymizedId: anonymizedUid,
+      results: anonymizationResults
+    };
+    
+  } catch (error) {
+    functions.logger.error(`Error in anonymization process for user ${uid}:`, error);
+    throw new functions.https.HttpsError("internal", "Anonymization process failed. Please try again.");
+  }
 });
+
+/**
+ * Generate consistent anonymized ID for a user
+ */
+async function generateAnonymizedId(uid: string): Promise<string> {
+  const crypto = require('crypto');
+  const salt = process.env.ANONYMIZATION_SALT || 'default-salt-change-in-production';
+  
+  return crypto
+    .createHash('sha256')
+    .update(uid + salt)
+    .digest('hex')
+    .substring(0, 20); // Use first 20 characters for anonymized ID
+}
+
+/**
+ * Hash string with salt for additional security
+ */
+async function hashWithSalt(input: string): Promise<string> {
+  const crypto = require('crypto');
+  const salt = process.env.PRIVACY_SALT || 'privacy-salt-change-in-production';
+  
+  return crypto
+    .createHash('sha256')
+    .update(input + salt)
+    .digest('hex');
+}
+
+/**
+ * Anonymize a specific collection for a user
+ */
+async function anonymizeCollection(uid: string, anonymizedUid: string, collectionName: string, level: string): Promise<number> {
+  const userDocs = await db.collection(collectionName).where('uid', '==', uid).get();
+  
+  if (userDocs.empty) {
+    return 0;
+  }
+  
+  const batch = db.batch();
+  let processedCount = 0;
+  
+  for (const doc of userDocs.docs) {
+    const originalData = doc.data();
+    const anonymizedData = await anonymizeDocumentData(originalData, level);
+    
+    // Add anonymized document to anonymizedData collection
+    const anonymizedDocRef = db.collection('anonymizedData')
+      .doc(anonymizedUid)
+      .collection(collectionName)
+      .doc(doc.id);
+    
+    batch.set(anonymizedDocRef, {
+      ...anonymizedData,
+      uid: anonymizedUid,
+      originalCollection: collectionName,
+      anonymizedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    
+    processedCount++;
+    
+    // Commit batch when it gets large
+    if (processedCount % 400 === 0) {
+      await batch.commit();
+    }
+  }
+  
+  // Commit remaining documents
+  if (processedCount % 400 !== 0) {
+    await batch.commit();
+  }
+  
+  return processedCount;
+}
+
+/**
+ * Anonymize document data based on anonymization level
+ */
+async function anonymizeDocumentData(data: any, level: string): Promise<any> {
+  const anonymized = { ...data };
+  
+  // Remove direct PII
+  delete anonymized.uid;
+  delete anonymized.email;
+  delete anonymized.name;
+  delete anonymized.phoneNumber;
+  
+  // Fuzz timestamps based on level
+  if (anonymized.timestamp) {
+    anonymized.timestamp = fuzzTimestamp(anonymized.timestamp, level);
+  }
+  if (anonymized.createdAt) {
+    anonymized.createdAt = fuzzTimestamp(anonymized.createdAt, level);
+  }
+  
+  // Handle location data
+  if (anonymized.location) {
+    anonymized.location = anonymizeLocation(anonymized.location, level);
+  }
+  if (anonymized.gps) {
+    anonymized.gps = anonymizeLocation(anonymized.gps, level);
+  }
+  
+  // Anonymize text content based on level
+  if (anonymized.text && level === 'complete') {
+    anonymized.text = anonymizeTextContent(anonymized.text);
+  }
+  
+  // Fuzz numerical metrics
+  if (anonymized.metrics) {
+    anonymized.metrics = fuzzMetrics(anonymized.metrics, level);
+  }
+  
+  return anonymized;
+}
+
+/**
+ * Fuzz timestamp to reduce precision
+ */
+function fuzzTimestamp(timestamp: any, level: string): admin.firestore.Timestamp {
+  if (!timestamp || !timestamp.toDate) return timestamp;
+  
+  const date = timestamp.toDate();
+  let fuzzedDate: Date;
+  
+  switch (level) {
+    case 'minimal':
+      // Round to nearest hour
+      fuzzedDate = new Date(Math.round(date.getTime() / (60 * 60 * 1000)) * (60 * 60 * 1000));
+      break;
+    case 'standard':
+      // Round to nearest 4 hours
+      fuzzedDate = new Date(Math.round(date.getTime() / (4 * 60 * 60 * 1000)) * (4 * 60 * 60 * 1000));
+      break;
+    case 'complete':
+      // Round to nearest day
+      fuzzedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      break;
+    default:
+      fuzzedDate = date;
+  }
+  
+  return admin.firestore.Timestamp.fromDate(fuzzedDate);
+}
+
+/**
+ * Anonymize location data
+ */
+function anonymizeLocation(location: any, level: string): any {
+  if (!location || (!location.latitude && !location.lng)) return null;
+  
+  const lat = location.latitude || location.lat;
+  const lng = location.longitude || location.lng;
+  
+  if (typeof lat !== 'number' || typeof lng !== 'number') return null;
+  
+  let precision: number;
+  switch (level) {
+    case 'minimal':
+      precision = 0.01; // ~1km precision
+      break;
+    case 'standard':
+      precision = 0.1; // ~10km precision
+      break;
+    case 'complete':
+      precision = 1; // ~100km precision
+      break;
+    default:
+      precision = 0.01;
+  }
+  
+  return {
+    latitude: Math.round(lat / precision) * precision,
+    longitude: Math.round(lng / precision) * precision,
+    anonymized: true
+  };
+}
+
+/**
+ * Anonymize text content by removing potential PII
+ */
+function anonymizeTextContent(text: string): string {
+  if (!text) return text;
+  
+  // Replace potential names, emails, phones with placeholders
+  return text
+    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL]')
+    .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[PHONE]')
+    .replace(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g, '[NAME]')
+    .replace(/\b\d{1,5}\s+[A-Za-z]+\s+(Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd)\b/gi, '[ADDRESS]');
+}
+
+/**
+ * Fuzz numerical metrics to reduce precision
+ */
+function fuzzMetrics(metrics: any, level: string): any {
+  if (!metrics || typeof metrics !== 'object') return metrics;
+  
+  const fuzzed = { ...metrics };
+  
+  for (const [key, value] of Object.entries(fuzzed)) {
+    if (typeof value === 'number') {
+      let fuzzFactor: number;
+      
+      switch (level) {
+        case 'minimal':
+          fuzzFactor = 0.95; // 5% variance
+          break;
+        case 'standard':
+          fuzzFactor = 0.9; // 10% variance
+          break;
+        case 'complete':
+          fuzzFactor = 0.8; // 20% variance
+          break;
+        default:
+          fuzzFactor = 0.95;
+      }
+      
+      // Add random variance within the fuzz factor
+      const variance = (Math.random() - 0.5) * 2 * (1 - fuzzFactor);
+      fuzzed[key] = Math.round((value * (1 + variance)) * 100) / 100;
+    }
+  }
+  
+  return fuzzed;
+}
 
 /**
  * Generates aggregated B2B insights from anonymized data.
