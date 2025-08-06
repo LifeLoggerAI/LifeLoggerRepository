@@ -197,6 +197,68 @@ export const LifeEventSchema = z.object({
 });
 export type LifeEvent = z.infer<typeof LifeEventSchema>;
 
+// ===== TIMELINE & REPLAY SYSTEMS SCHEMAS =====
+// Enhanced Dream Log schema for Section 3.5
+export const DreamLogSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    dreamId: z.string().optional(), // Reference to original dream event
+    date: z.string(), // YYYY-MM-DD format
+    dreamText: z.string(),
+    tags: z.array(z.string()),
+    symbolicMap: z.record(z.any()),
+    replayStyle: z.string().optional(),
+    scenes: z.array(z.any()).optional(),
+    narratorVoiceOver: z.string().optional(),
+    visualLayers: z.array(z.any()).optional(),
+    interactiveElements: z.array(z.any()).optional(),
+    createdAt: z.number(),
+});
+export type DreamLog = z.infer<typeof DreamLogSchema>;
+
+export const TherapistReplaySchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    theme: z.string(),
+    eventIds: z.array(z.string()),
+    scenes: z.array(z.object({
+        id: z.string(),
+        eventId: z.string(),
+        eventType: z.string(),
+        sceneIndex: z.number(),
+        symbolicOverlay: z.any(),
+        narratorScript: z.string(),
+        visualEffects: z.array(z.any()),
+        transitionTo: z.string(),
+    })),
+    totalDuration: z.number(),
+    status: z.enum(["ready", "playing", "completed"]),
+    createdAt: z.number(),
+});
+export type TherapistReplay = z.infer<typeof TherapistReplaySchema>;
+
+export const MemoryGalaxyClusterSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    type: z.enum(["emotion", "dream_theme", "cognitive"]),
+    events: z.array(z.object({
+        id: z.string(),
+        type: z.string(),
+        data: z.any(),
+        timestamp: z.number(),
+    })),
+    center: z.object({
+        x: z.number(),
+        y: z.number(),
+    }),
+    size: z.number(),
+    color: z.string(),
+});
+export type MemoryGalaxyCluster = z.infer<typeof MemoryGalaxyClusterSchema>;
+
+// ===== USER-FACING AI SCHEMAS (ENHANCED) =====
+// Note: Using existing schemas where they already exist for compatibility
+
 export const TraitChangeSchema = z.object({
   trait: z.string(),
   from: z.number(),

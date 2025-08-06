@@ -19,6 +19,12 @@ export * from "./data-capture-engine";
 // Export AI insight engines  
 export * from "./ai-insight-engine";
 
+// Export timeline & replay systems
+export * from "./timeline-engine";
+
+// Export user-facing AI
+export * from "./user-facing-ai-engine";
+
 // Export user management triggers
 export * from "./user-management";
 
