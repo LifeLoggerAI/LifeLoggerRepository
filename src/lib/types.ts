@@ -4,6 +4,199 @@ import { z } from "zod";
 // Base sentiment type
 export type Sentiment = "positive" | "negative" | "neutral";
 
+// ===== DATA CAPTURE BACKBONE SCHEMAS =====
+// 1. Audio → Transcription → Diarization → Emotion Tagging
+export const ConversationSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    timestamp: z.number(),
+    transcript: z.string(),
+    speakerId: z.string(),
+    emotionTag: z.string(),
+    conversationId: z.string().optional(),
+    durationSec: z.number().optional(),
+    confidence: z.number().optional(),
+});
+export type Conversation = z.infer<typeof ConversationSchema>;
+
+// 2. Motion & Sleep → Rhythm Map + Health Echo
+export const RhythmMapSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    date: z.string(), // YYYY-MM-DD format
+    sleepHours: z.number(),
+    movementScore: z.number(),
+    rhythmState: z.enum(["Off-Rhythm", "Overstimulated", "Stable"]),
+    createdAt: z.number(),
+    wakeTime: z.number().optional(),
+    bedTime: z.number().optional(),
+    deepSleepMinutes: z.number().optional(),
+    restfulnessScore: z.number().optional(),
+});
+export type RhythmMap = z.infer<typeof RhythmMapSchema>;
+
+export const HealthEchoSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    date: z.string(), // YYYY-MM-DD format
+    heartRateAvg: z.number().optional(),
+    movementScore: z.number(),
+    wellnessIndex: z.number(),
+    createdAt: z.number(),
+    stepsCount: z.number().optional(),
+    activeMinutes: z.number().optional(),
+    stressIndex: z.number().optional(),
+});
+export type HealthEcho = z.infer<typeof HealthEchoSchema>;
+
+// 3. GPS Context Tagging
+export const GpsEventSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    locationName: z.string(),
+    lat: z.number(),
+    lng: z.number(),
+    taggedEmotion: z.string(),
+    timestamp: z.number(),
+    accuracy: z.number().optional(),
+    dwellTimeMinutes: z.number().optional(),
+    visitType: z.enum(["arrival", "departure", "dwelling"]).optional(),
+});
+export type GpsEvent = z.infer<typeof GpsEventSchema>;
+
+// 4. Device Activity Signals
+export const DeviceSignalSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    dndState: z.boolean(),
+    notificationCount: z.number(),
+    missedCalls: z.number(),
+    timestamp: z.number(),
+    screenTimeMinutes: z.number().optional(),
+    appSwitches: z.number().optional(),
+    batteryLevel: z.number().optional(),
+});
+export type DeviceSignal = z.infer<typeof DeviceSignalSchema>;
+
+// 5. Shadow Cognition Metrics
+export const ShadowCognitionSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    date: z.string(), // YYYY-MM-DD format
+    frictionTaps: z.number(),
+    anxietyMotion: z.number(),
+    bedtimeScroll: z.number(),
+    timestamp: z.number(),
+    compulsiveOpenCount: z.number().optional(),
+    hesitationTaps: z.number().optional(),
+    avoidanceBehaviors: z.number().optional(),
+});
+export type ShadowCognition = z.infer<typeof ShadowCognitionSchema>;
+
+// 6. Obscura Patterns
+export const ObscuraPatternsSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    date: z.string(), // YYYY-MM-DD format
+    faceTiltScore: z.number(),
+    cancelBehaviorCount: z.number(),
+    stillnessIndex: z.number(),
+    timestamp: z.number(),
+    postureShifts: z.number().optional(),
+    microExpressionChanges: z.number().optional(),
+    environmentalStillness: z.number().optional(),
+});
+export type ObscuraPatterns = z.infer<typeof ObscuraPatternsSchema>;
+
+// Enhanced Voice Profiles for Relationship Metrics (7)
+export const VoiceProfileSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    voicePrintHash: z.string(),
+    familiarityScore: z.number(),
+    emotionalTrend: z.string(),
+    speakerName: z.string().optional(),
+    relationshipType: z.string().optional(),
+    lastInteraction: z.number().optional(),
+    conversationCount: z.number().optional(),
+    toneEvolution: z.array(z.object({
+        date: z.number(),
+        dominantTone: z.string(),
+    })).optional(),
+});
+export type VoiceProfile = z.infer<typeof VoiceProfileSchema>;
+
+// ===== AI INSIGHT ENGINES SCHEMAS =====
+// 1. Cognitive Mirror
+export const CognitiveMirrorSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    date: z.string(), // YYYY-MM-DD format
+    moodScore: z.number(),
+    stressIndex: z.number(),
+    highlightInsights: z.array(z.string()),
+    timestamp: z.number(),
+    energyLevel: z.number().optional(),
+    socialConnection: z.number().optional(),
+    purposeAlignment: z.number().optional(),
+});
+export type CognitiveMirror = z.infer<typeof CognitiveMirrorSchema>;
+
+// 2. Emotion Forecast Model
+export const EmotionForecastSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    date: z.string(), // YYYY-MM-DD format
+    predictedMood: z.string(),
+    confidence: z.number(),
+    timestamp: z.number(),
+    predictionHorizonDays: z.number().optional(),
+    influencingFactors: z.array(z.string()).optional(),
+    recommendedActions: z.array(z.string()).optional(),
+});
+export type EmotionForecast = z.infer<typeof EmotionForecastSchema>;
+
+// 3. Rhythm State Scoring
+export const RhythmScoreSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    date: z.string(), // YYYY-MM-DD format
+    classification: z.enum(["Off-Rhythm", "Overstimulated", "Stable"]),
+    score: z.number(),
+    timestamp: z.number(),
+    rhythmFactors: z.record(z.number()).optional(),
+    stabilityTrend: z.string().optional(),
+});
+export type RhythmScore = z.infer<typeof RhythmScoreSchema>;
+
+// 4. Behavioral Recovery Engine
+export const RecoveryEngineSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    startDate: z.string(), // YYYY-MM-DD format
+    reboundDetected: z.boolean(),
+    improvementScore: z.number(),
+    timestamp: z.number(),
+    recoveryType: z.string().optional(),
+    triggerEvent: z.string().optional(),
+    durationDays: z.number().optional(),
+});
+export type RecoveryEngine = z.infer<typeof RecoveryEngineSchema>;
+
+// 5. Life Event Auto-Correlation
+export const LifeEventSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    eventType: z.string(),
+    detectedOn: z.string(), // YYYY-MM-DD format
+    metricsInvolved: z.array(z.string()),
+    timestamp: z.number(),
+    significance: z.number().optional(),
+    correlatedChanges: z.record(z.number()).optional(),
+    eventDescription: z.string().optional(),
+});
+export type LifeEvent = z.infer<typeof LifeEventSchema>;
+
 export const TraitChangeSchema = z.object({
   trait: z.string(),
   from: z.number(),

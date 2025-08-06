@@ -13,6 +13,12 @@
 // Export Genkit flows
 export * from "./genkit-sample";
 
+// Export data capture backbone
+export * from "./data-capture-engine";
+
+// Export AI insight engines  
+export * from "./ai-insight-engine";
+
 // Export user management triggers
 export * from "./user-management";
 
