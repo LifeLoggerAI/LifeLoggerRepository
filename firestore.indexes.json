@@ -239,6 +239,61 @@
         { "fieldPath": "userId", "order": "ASCENDING" },
         { "fieldPath": "season", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "anonymizedInsights",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "insightType", "order": "ASCENDING" },
+        { "fieldPath": "generatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "dataExports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "exportedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "onboardingScrolls",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "emailQueue",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "scheduledFor", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "voiceRecaps",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "privacyAuditLog",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "timestamp", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "alphaFeedback",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "priority", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

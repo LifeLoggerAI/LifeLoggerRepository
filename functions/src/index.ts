@@ -28,6 +28,9 @@ export * from "./user-facing-ai-engine";
 // Export visual & animation layer
 export * from "./visual-animation-engine";
 
+// Export monetization, onboarding & compliance
+export * from "./final-systems-engine";
+
 // Export user management triggers
 export * from "./user-management";
 
