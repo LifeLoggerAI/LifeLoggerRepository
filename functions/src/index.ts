@@ -25,6 +25,9 @@ export * from "./timeline-engine";
 // Export user-facing AI
 export * from "./user-facing-ai-engine";
 
+// Export visual & animation layer
+export * from "./visual-animation-engine";
+
 // Export user management triggers
 export * from "./user-management";
 

@@ -1,0 +1,54 @@
+<svg width="100%" height="100%" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB"/>
+      <stop offset="100%" style="stop-color:#E6F3FF"/>
+    </linearGradient>
+    <filter id="cloudBlur">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
+  
+  <!-- Sky Background -->
+  <rect width="100%" height="100%" fill="url(#skyGradient)"/>
+  
+  <!-- Floating Clouds -->
+  <g id="clouds" filter="url(#cloudBlur)">
+    <ellipse cx="150" cy="100" rx="40" ry="25" fill="rgba(255,255,255,0.8)">
+      <animate attributeName="cx" values="150;200;150" dur="15s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="180" cy="95" rx="50" ry="30" fill="rgba(255,255,255,0.7)">
+      <animate attributeName="cx" values="180;230;180" dur="18s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="600" cy="80" rx="35" ry="20" fill="rgba(255,255,255,0.9)">
+      <animate attributeName="cx" values="600;650;600" dur="20s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+  
+  <!-- Weather Overlay (can be dynamically changed) -->
+  <g id="weatherOverlay" opacity="0.5">
+    <!-- Gentle Rain -->
+    <g id="rain" opacity="0">
+      <line x1="100" y1="0" x2="95" y2="50" stroke="#4A90E2" stroke-width="1" opacity="0.6">
+        <animate attributeName="y1" values="0;600" dur="1s" repeatCount="indefinite"/>
+        <animate attributeName="y2" values="50;650" dur="1s" repeatCount="indefinite"/>
+      </line>
+      <line x1="300" y1="0" x2="295" y2="50" stroke="#4A90E2" stroke-width="1" opacity="0.6">
+        <animate attributeName="y1" values="0;600" dur="1.2s" repeatCount="indefinite"/>
+        <animate attributeName="y2" values="50;650" dur="1.2s" repeatCount="indefinite"/>
+      </line>
+    </g>
+    
+    <!-- Sunshine -->
+    <g id="sunshine" opacity="1">
+      <circle cx="700" cy="80" r="40" fill="#FFD700" opacity="0.7">
+        <animate attributeName="opacity" values="0.5;0.9;0.5" dur="6s" repeatCount="indefinite"/>
+      </circle>
+      <g stroke="#FFD700" stroke-width="2" opacity="0.5">
+        <line x1="700" y1="20" x2="700" y2="0"/>
+        <line x1="720" y1="30" x2="730" y2="20"/>
+        <line x1="730" y1="80" x2="750" y2="80"/>
+      </g>
+    </g>
+  </g>
+</svg>
